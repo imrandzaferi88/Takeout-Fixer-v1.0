@@ -13,8 +13,22 @@ jobs:
 
       - name: Estrai lo ZIP del progetto
         run: |
-          unzip -o TakeoutFixer_Android_Project.zip
-          # Se lo zip ha creato la cartella TakeoutFixerAndroid, sposta i file nella root
+          # Mostra i file presenti per verifica
+          echo "File presenti nel repository:"
+          ls -la
+          
+          # Trova qualsiasi file zip presente, anche nelle sottocartelle
+          ZIP_PATH=$(find . -name "*.zip" | head -n 1)
+          
+          if [ -z "$ZIP_PATH" ]; then
+            echo "ERRORE: Nessun file .zip trovato nel repository!"
+            exit 1
+          fi
+          
+          echo "Archivio trovato: $ZIP_PATH"
+          unzip -o "$ZIP_PATH"
+          
+          # Se lo zip ha una cartella interna, sposta i file nella root
           if [ -d "TakeoutFixerAndroid" ]; then
             cp -r TakeoutFixerAndroid/* .
           fi
