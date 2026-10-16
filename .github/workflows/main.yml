@@ -12,7 +12,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Estrai lo ZIP del progetto
-        run: unzip -o TakeoutFixer_Android_Project.zip
+        run: |
+          unzip -o TakeoutFixer_Android_Project.zip
+          # Se lo zip ha creato la cartella TakeoutFixerAndroid, sposta i file nella root
+          if [ -d "TakeoutFixerAndroid" ]; then
+            cp -r TakeoutFixerAndroid/* .
+          fi
 
       - name: Configura Java 17
         uses: actions/setup-java@v4
@@ -26,7 +31,7 @@ jobs:
           gradle-version: '8.4'
 
       - name: Compila APK
-        run: gradle assembleDebug
+        run: gradle assembleDebug --stacktrace
 
       - name: Carica APK pronto
         uses: actions/upload-artifact@v4
